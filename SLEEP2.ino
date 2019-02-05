@@ -1,36 +1,47 @@
 #include <EEPROM.h>
+#include "LowPower.h"
 
-#include <MsTimer2.h>
-#include <avr/sleep.h>
-#include <avr/power.h>
-
-int cont = 0;
+int num = EEPROM.read(0);
 void setup() {
+  // put your setup code here, to run once:
   Serial.begin(9600);
-  MsTimer2::set(1000, conteo);
-  MsTimer2::start();
-
-  set_sleep_mode(SLEEP_MODE_PWR_DOWN);
-  sleep_enable();
+  Serial.println(EEPROM.read(0));
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  sleep_disable();
-    delay(20);
-
+  if (EEPROM.read(0) == 0) {
+    num = num + 1;
+    EEPROM.write(0, num);
+    delay(10);
+    LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);
+  }
+  if (EEPROM.read(0) == 1) {
+    num = num + 1;
+    EEPROM.write(0, num);
+    delay(10);
+    LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);
+  }
+  if (EEPROM.read(0) == 2) {
+    num = num + 1;
+    EEPROM.write(0, num);
+    delay(10);
+    LowPower.powerDown(SLEEP_2S, ADC_OFF, BOD_OFF);
+  }
+  if (EEPROM.read(0) == 3) {
+    num = num + 1;
+    EEPROM.write(0, num);
+    delay(10);
+    LowPower.powerDown(SLEEP_1S, ADC_OFF, BOD_OFF);
+  }
+  if (EEPROM.read(0) > 3) {
+    num = 0;
+    EEPROM.write(0, num);
+    delay(10);
+    Serial.println(analogRead(0));
+    delay(1000);
+  }
 }
 
-
-void conteo() {
-  if (cont < 3) {
-    cont++;
-    Serial.println(cont);
-      } else {    
-    Serial.println(analogRead(0));
-    Serial.flush();
-    cont = 0;
-    delay(20);
-    sleep_mode();
-  }
+void memoria() {
+  EEPROM.write(0, 0);
 }
